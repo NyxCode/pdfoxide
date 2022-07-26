@@ -1,34 +1,13 @@
-use js_sys::{Function, SharedArrayBuffer, Uint8Array, Uint8ClampedArray};
-use pdfium_render::bitmap::{PdfBitmap, PdfBitmapFormat};
+use js_sys::{Function, Uint8ClampedArray};
+use pdfium_render::bitmap::PdfBitmapFormat;
 use pdfium_render::error::PdfiumError;
-use pdfium_render::pages::PdfPageIndex;
 use pdfium_render::pdfium::Pdfium;
 use pdfium_render::prelude::{PdfBitmapConfig, PdfDocument};
-use std::cell::RefCell;
-use std::ops::Deref;
 use wasm_bindgen::prelude::*;
-use web_sys::{console, Performance};
-
-macro_rules! console_log {
-    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
-}
+use web_sys::console;
 
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
-
-const BUFFER_SIZE: usize = 1000 * 1000 * 50;
-// TODO: maybeUninit
-static mut BUFFER: [u8; BUFFER_SIZE] = [0; BUFFER_SIZE];
-
-fn buffer_addr() -> *mut u8 {
-    unsafe { BUFFER.as_mut_ptr() }
-}
-
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(a: &str);
-}
 
 #[wasm_bindgen]
 pub struct PdfOxide {
@@ -106,17 +85,6 @@ impl Document {
     }
 }
 
-#[wasm_bindgen]
-#[derive(Copy, Clone)]
-pub struct Point {
-    pub x: u32,
-    pub y: u32,
-}
-
 fn error_to_js(err: PdfiumError) -> JsValue {
     JsValue::from_str(&format!("{:?}", err))
-}
-
-fn convert(a: &Uint8Array) -> Uint8ClampedArray {
-    Uint8ClampedArray::new_with_byte_offset_and_length(a, a.byte_offset(), a.byte_length())
 }
