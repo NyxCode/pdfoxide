@@ -1,0 +1,30 @@
+[package]
+name = "pdfoxide-core"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[profile.release]
+lto = true
+opt-level = 3
+debug = true
+
+[dependencies]
+wasm-bindgen = "0.2.82"
+wee_alloc = "0.4.5"
+
+[dependencies.pdfium-render]
+git = "https://github.com/NyxCode/pdfium-render"
+branch = "bitmap.as_uint8array"
+
+default_features = false
+
+[dependencies.js-sys]
+version = "0.3.59"
+
+[dependencies.web-sys]
+version = "0.3.59"
+features = ['Window', 'Performance', 'PerformanceTiming']
+
